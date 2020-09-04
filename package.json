@@ -1,6 +1,6 @@
 {
   "name": "@black40x/vue-pano",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A PanolensJS panorama for Vue.js.",
   "main": "dist/vue-pano.common.js",
   "files": [
@@ -8,6 +8,12 @@
     "src/*",
     "*.json",
     "*.js"
+  ],
+  "keywords": [
+    "panolens",
+    "panorama",
+    "vue",
+    "components"
   ],
   "repository": {
     "type": "git",
