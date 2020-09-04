@@ -1,29 +1,37 @@
 # vue-pano
 
-## Project setup
+A [PanolensJS](https://pchen66.github.io/Panolens/) panorama for Vue.js 2.0.
+
+## Install
 ```
-npm install
+npm i @black40x/vue-pano
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+## Quick Start
+``` javascript
+import Vue from 'vue'
+import VuePano from '@black40x/vue-pano'
+import '@black40x/vue-pano/dist/vue-pano.css'
+
+Vue.use(VuePano)
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Usage
 
-### Run your unit tests
+``` javascript
+<template>
+  <pano-viewer main-scene="first">
+    <pano-scene
+      name="first"
+      source="http://mySource.com/360-image.jpeg"
+      :center="{x: 1970, y: 570}"
+      >
+      <pano-info-spot
+        label="Info point"
+        :position="{x: 1970, y: 570}"
+        to="sceneName"
+      />
+    </pano-scene>
+  </pano-viewer
+</template>
 ```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
