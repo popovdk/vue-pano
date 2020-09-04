@@ -6,7 +6,7 @@
 
 <script>
 import * as PanoLens from 'panolens/build/panolens.module'
-import * as Utils from '@/utils'
+import * as Utils from '../utils'
 
 export default {
   name: 'PanoScene',

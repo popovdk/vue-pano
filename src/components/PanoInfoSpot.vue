@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import * as Utils from '@/utils'
+import * as Utils from '../utils'
 import * as PanoLens from 'panolens'
 
 export default {
