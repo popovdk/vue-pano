@@ -18,7 +18,7 @@ Vue.use(VuePano)
 
 ## Usage
 
-``` javascript
+``` html
 <template>
   <pano-viewer main-scene="first">
     <pano-scene
