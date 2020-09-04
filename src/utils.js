@@ -44,7 +44,7 @@ export function uvWrap (mesh, point) {
   for (let i = 0; i < uvs.length; i += 1) {
     const uv = uvs[i]
     const face = faces[i]
-    if (this.inUv(uv, point)) {
+    if (inUv(uv, point)) {
       const wMatrix = new THREE.Matrix4().multiplyMatrices(
         this.makeInitialUvMatrix(uv), this.makeFaceWorldMatrix(mesh, face))
       wMatrix.transpose()
