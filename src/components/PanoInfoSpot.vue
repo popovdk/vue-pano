@@ -176,7 +176,9 @@ export default {
     }
   },
   destroyed () {
-    this.infoSpot.dispose()
+    if (this.infoSpot !== null) {
+      this.infoSpot.dispose()
+    }
   }
 }
 </script>

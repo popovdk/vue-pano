@@ -122,7 +122,9 @@ export default {
     }
   },
   destroyed () {
-    this.scene.dispose()
+    if (this.scene !== null) {
+      this.scene.dispose()
+    }
   }
 }
 </script>
