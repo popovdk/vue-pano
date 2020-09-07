@@ -126,6 +126,13 @@ export default {
     clearAll () {
       this.scenes.forEach(scene => this.viewer.remove(scene))
     }
+  },
+  destroyed () {
+    if (this.viewer) {
+      this.viewer.dispose()
+      this.viewer.destroy()
+      this.viewer = null
+    }
   }
 }
 </script>
