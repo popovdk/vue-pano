@@ -5,7 +5,7 @@ export function processCoordinates (x, y, width, height, cartesian = false) {
 
   return {
     x: (x - width / 2) + width,
-    y: (x - height / 2) + height
+    y: (y - height / 2) + height
   }
 }
 
