@@ -30,6 +30,10 @@ export default {
       required: true,
       validator: value => value.x !== undefined && value.y !== undefined
     },
+    cartesian: {
+      type: Boolean,
+      default: false
+    },
     focusOnClick: {
       type: Boolean,
       default: false
@@ -101,11 +105,19 @@ export default {
     defineInfoSpot () {
       if (this.infoSpot !== null) return false
 
+      const processedPosition = Utils.processCoordinates(
+        this.position.x,
+        this.position.y,
+        this.getScene().material.map.image.width,
+        this.getScene().material.map.image.height,
+        this.cartesian
+      )
+
       const spotPosition = Utils.uvWrap(
         this.getScene(), Utils.xyToVector2(
           Utils.xyToUv(
-            this.position.x,
-            this.position.y,
+            processedPosition.x,
+            processedPosition.y,
             this.getScene().material.map.image.width,
             this.getScene().material.map.image.height
           )

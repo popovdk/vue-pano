@@ -1,5 +1,14 @@
 import * as THREE from 'three'
 
+export function processCoordinates (x, y, width, height, cartesian = false) {
+  if (!cartesian) return { x: x, y: y }
+
+  return {
+    x: (x - width / 2) + width,
+    y: (x - height / 2) + height
+  }
+}
+
 /**
  * @param position
  * @returns {THREE.Vector2}

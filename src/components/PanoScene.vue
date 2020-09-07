@@ -15,6 +15,10 @@ export default {
     name: {
       required: true
     },
+    cartesian: {
+      type: Boolean,
+      default: false
+    },
     source: {
       type: String,
       required: true
@@ -76,11 +80,18 @@ export default {
 
       this.scene.addEventListener('load', () => {
         // Create center XYZ position
+        const processedCenter = Utils.processCoordinates(
+          this.center.x,
+          this.center.y,
+          this.scene.material.map.image.width,
+          this.scene.material.map.image.height,
+          this.cartesian
+        )
         this.scene.center = Utils.xyzToVector3(Utils.uvWrap(
           this.scene, Utils.xyToVector2(
             Utils.xyToUv(
-              this.center.x,
-              this.center.y,
+              processedCenter.x,
+              processedCenter.y,
               this.scene.material.map.image.width,
               this.scene.material.map.image.height
             )
