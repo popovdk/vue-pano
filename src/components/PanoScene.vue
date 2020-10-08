@@ -50,6 +50,7 @@ export default {
       addInfoSpot: this.addInfoSpot,
       getScene: this.getScene,
       getViewer: this.getViewer,
+      showOneInfoSpot: this.showOneInfoSpot,
       sceneReady: () => this.isReady
     }
   },
@@ -119,6 +120,9 @@ export default {
     },
     showInfoSpots (display = true) {
       this.infoSpots.forEach(infoSpot => display ? infoSpot.show() : infoSpot.onDismiss())
+    },
+    showOneInfoSpot (currentInfoSpot) {
+      this.infoSpots.forEach(infoSpot => infoSpot === currentInfoSpot ? false : infoSpot.onDismiss())
     }
   },
   destroyed () {

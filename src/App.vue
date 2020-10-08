@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <pano-viewer :auto-hide-infospot="false" fast-show-infospot main-scene="first">
+    <pano-viewer no-zoom :auto-hide-infospot="false" fast-show-infospot main-scene="first">
       <pano-scene
         name="first"
         :source="require('@/assets/rooms/room1.jpeg')"

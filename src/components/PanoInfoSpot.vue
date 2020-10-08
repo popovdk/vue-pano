@@ -11,7 +11,7 @@ import * as PanoLens from 'panolens'
 
 export default {
   name: 'PanoInfoSpot',
-  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer'],
+  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer', 'showOneInfoSpot'],
   props: {
     label: {
       type: String,
@@ -162,6 +162,8 @@ export default {
       if (this.to !== undefined) {
         this.$parent.$emit('switch-scene', this.to)
       }
+
+      this.showOneInfoSpot(this.infoSpot)
 
       this.$emit('click', this.infoSpot)
     },

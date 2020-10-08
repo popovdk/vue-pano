@@ -18,6 +18,10 @@ export default {
       type: Number,
       default: 100
     },
+    noZoom: {
+      type: Boolean,
+      default: false
+    },
     controlBar: {
       type: Boolean,
       default: true
@@ -89,6 +93,7 @@ export default {
         horizontalView: this.horizontalView
       })
 
+      this.viewer.OrbitControls.noZoom = this.noZoom
       this.viewer.render()
 
       this.$nextTick(() => {
