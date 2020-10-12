@@ -78,7 +78,8 @@ export default {
       const that = this
 
       PanoLens.Infospot.prototype.updateElement = function (element) {
-        this.element = element.elm.cloneNode(true)
+        // console.log(element)
+        this.element = element.elm // element.elm.cloneNode(true)
         this.element.style.display = 'none'
         this.element.style.position = 'absolute'
         this.element.verticalDelta = 0
