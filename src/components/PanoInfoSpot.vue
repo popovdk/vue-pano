@@ -148,6 +148,18 @@ export default {
           this.onClick()
         })
 
+        this.infoSpot.addEventListener('hover', () => {
+          this.$emit('hover', this.infoSpot)
+        })
+
+        this.infoSpot.addEventListener('hoverenter', () => {
+          this.$emit('hoverenter', this.infoSpot)
+        })
+
+        this.infoSpot.addEventListener('hoverleave', () => {
+          this.$emit('hoverleave', this.infoSpot)
+        })
+
         this.$emit('defined', this.infoSpot)
 
         this.infoSpot.show()
