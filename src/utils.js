@@ -10,6 +10,35 @@ export function processCoordinates (x, y, width, height, cartesian = false) {
 }
 
 /**
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @returns {{x: number, y: number}}
+ */
+export function invertCoordinates (x, y, w, h) {
+  return {
+    x: w - x,
+    y: h - y
+  }
+}
+
+/**
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @returns {THREE.Vector3}
+ */
+export function xyToVector3 (scene, x, y) {
+  const cord = invertCoordinates(x, y, scene.material.map.image.width, scene.material.map.image.height)
+
+  return xyzToVector3(uvWrap(
+    scene, xyToVector2(xyToUv(cord.x, cord.y, scene.material.map.image.width, scene.material.map.image.height))
+  ))
+}
+
+/**
  * @param position
  * @returns {THREE.Vector2}
  */

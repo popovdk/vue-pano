@@ -11,7 +11,7 @@ import * as PanoLens from 'panolens'
 
 export default {
   name: 'PanoInfoSpot',
-  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer', 'showOneInfoSpot'],
+  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer', 'showOneInfoSpot', 'getCurrentScene'],
   props: {
     label: {
       type: String,
@@ -78,8 +78,7 @@ export default {
       const that = this
 
       PanoLens.Infospot.prototype.updateElement = function (element) {
-        // console.log(element)
-        this.element = element.elm // element.elm.cloneNode(true)
+        this.element = element.elm
         this.element.style.display = 'none'
         this.element.style.position = 'absolute'
         this.element.verticalDelta = 0
@@ -88,12 +87,16 @@ export default {
         const spot = this
 
         const updateTranslate = function () {
-          const vector = that.getViewer().getScreenVector(that.infoSpot.position)
-          spot.element.style.display = 'block'
-          spot.element.style.transform = 'translate(' + (vector.x) + 'px, ' + (vector.y) + 'px)'
-          spot.element._width = spot.element.clientWidth
-          spot.element._height = spot.element.clientHeight
-          spot.element.dataset.showing = 'false'
+          if (that.getScene().name !== that.getCurrentScene().name) {
+            spot.element.style.display = 'none'
+          } else {
+            const vector = that.getViewer().getScreenVector(that.infoSpot.position)
+            spot.element.style.display = 'block'
+            spot.element.style.transform = 'translate(' + (vector.x) + 'px, ' + (vector.y) + 'px)'
+            spot.element._width = spot.element.clientWidth
+            spot.element._height = spot.element.clientHeight
+            spot.element.dataset.showing = 'false'
+          }
         }
 
         this.element.addEventListener('click', () => {

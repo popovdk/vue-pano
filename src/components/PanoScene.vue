@@ -10,7 +10,7 @@ import * as Utils from '../utils'
 
 export default {
   name: 'PanoScene',
-  inject: ['addScene', 'viewerReady', 'setCameraPosition', 'switchScene', 'getViewer'],
+  inject: ['addScene', 'viewerReady', 'setCameraPosition', 'switchScene', 'getViewer', 'getCurrentScene'],
   props: {
     name: {
       required: true
@@ -31,12 +31,28 @@ export default {
       type: Object,
       required: true,
       validator: value => value.x !== undefined && value.y !== undefined
+    },
+    minPolarAngle: {
+      type: Number,
+      default: -Infinity
+    },
+    maxPolarAngle: {
+      type: Number,
+      default: Infinity
+    },
+    minAzimuthAngle: {
+      type: Number,
+      default: -Infinity
+    },
+    maxAzimuthAngle: {
+      type: Number,
+      default: Infinity
     }
   },
   watch: {
     canMount () {
       if (this.canMount) {
-        this.addScene(this.defineScene())
+        this.addScene(this.defineScene(), this)
       }
     }
   },
@@ -48,7 +64,9 @@ export default {
   provide () {
     return {
       addInfoSpot: this.addInfoSpot,
+      addObject: this.addObject,
       getScene: this.getScene,
+      getCurrentScene: this.getCurrentScene,
       getViewer: this.getViewer,
       showOneInfoSpot: this.showOneInfoSpot,
       sceneReady: () => this.isReady
@@ -58,7 +76,8 @@ export default {
     return {
       scene: null,
       isReady: false,
-      infoSpots: []
+      infoSpots: [],
+      objects: []
     }
   },
   mounted () {
@@ -68,7 +87,7 @@ export default {
     })
 
     if (this.canMount) {
-      this.addScene(this.defineScene())
+      this.addScene(this.defineScene(), this)
     }
   },
   methods: {
@@ -88,6 +107,7 @@ export default {
           this.scene.material.map.image.height,
           this.cartesian
         )
+
         this.scene.center = Utils.xyzToVector3(Utils.uvWrap(
           this.scene, Utils.xyToVector2(
             Utils.xyToUv(
@@ -117,6 +137,9 @@ export default {
     addInfoSpot (infoSpot) {
       this.infoSpots.push(infoSpot)
       this.scene.add(infoSpot)
+    },
+    addObject (object) {
+      this.objects.push(object)
     },
     showInfoSpots (display = true) {
       this.infoSpots.forEach(infoSpot => display ? infoSpot.show() : infoSpot.onDismiss())
