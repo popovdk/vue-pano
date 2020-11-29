@@ -51,6 +51,10 @@ export function xyToVector2 (position) {
  * @returns {THREE.Vector3}
  */
 export function xyzToVector3 (position) {
+  if (position === undefined) {
+    return undefined
+  }
+
   return new THREE.Vector3(-position.x, -position.y, position.z)
 }
 
