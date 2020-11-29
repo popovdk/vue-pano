@@ -1,11 +1,13 @@
 import PanoScene from '@/components/PanoScene'
 import PanoViewer from '@/components/PanoViewer'
 import PanoInfoSpot from '@/components/PanoInfoSpot'
+import PanoMesh from '@/components/PanoMesh'
 
 const Components = [
   PanoViewer,
   PanoScene,
-  PanoInfoSpot
+  PanoInfoSpot,
+  PanoMesh
 ]
 
 const install = function (Vue, opts = {}) {
@@ -22,5 +24,6 @@ export default {
   install,
   PanoViewer,
   PanoScene,
-  PanoInfoSpot
+  PanoInfoSpot,
+  PanoMesh
 }
