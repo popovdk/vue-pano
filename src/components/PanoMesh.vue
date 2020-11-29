@@ -61,7 +61,11 @@ export default {
     createShape () {
       const holes = []
       this.points.forEach(point => {
-        this.vertices.push(Utils.xyToVector3(this.getScene(), point[0], point[1]).negate())
+        const coord = Utils.xyToVector3(this.getScene(), point[0], point[1])
+
+        if (coord !== undefined) {
+          this.vertices.push(coord.negate())
+        }
       })
       this.geometry = new THREE.Geometry()
       this.geometry.vertices = this.vertices
