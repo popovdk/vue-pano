@@ -10,7 +10,16 @@ import * as Utils from '../utils'
 
 export default {
   name: 'PanoScene',
-  inject: ['addScene', 'viewerReady', 'setCameraPosition', 'switchScene', 'getViewer', 'getCurrentScene'],
+  inject: [
+    'addScene',
+    'viewerReady',
+    'setCameraPosition',
+    'switchScene',
+    'getViewer',
+    'getCurrentScene',
+    'loadSceneEvent',
+    'progressSceneEvent'
+  ],
   props: {
     name: {
       required: true
@@ -98,6 +107,11 @@ export default {
       this.scene.name = this.name
       this.scene.geometry.uvsNeedUpdate = true
 
+      this.scene.addEventListener('progress', () => {
+        this.progressSceneEvent()
+        this.$emit('progress')
+      })
+
       this.scene.addEventListener('load', () => {
         // Create center XYZ position
         const processedCenter = Utils.processCoordinates(
@@ -125,6 +139,7 @@ export default {
 
         this.isReady = true
         this.$emit('load')
+        this.loadSceneEvent()
       })
 
       this.scene.showInfoSpots = this.showInfoSpots

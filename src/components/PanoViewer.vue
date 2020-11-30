@@ -75,6 +75,8 @@ export default {
       setCameraPosition: this.setCameraPosition,
       switchScene: this.switchScene,
       addScene: this.addScene,
+      loadSceneEvent: this.loadSceneEvent,
+      progressSceneEvent: this.progressSceneEvent,
       viewerReady: () => this.isReady
     }
   },
@@ -139,6 +141,7 @@ export default {
       this.viewer.OrbitControls.noZoom = this.noZoom
 
       this.viewer.render()
+
       this.initRaycaster()
       this.tapEvent()
 
@@ -164,6 +167,12 @@ export default {
       if (scene.name === this.mainScene) {
         this.switchScene(this.mainScene)
       }
+    },
+    loadSceneEvent () {
+      this.$emit('loadScene')
+    },
+    progressSceneEvent () {
+      this.$emit('progressScene')
     },
     switchScene (sceneName) {
       if (this.scenes[sceneName] === undefined) return false

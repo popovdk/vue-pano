@@ -2,6 +2,8 @@
   <div id="app">
     <pano-viewer no-zoom
                  :camera-fov="80"
+                 @loadScene="sceneLoadEnd"
+                 @progressScene="sceneLoadStart"
                  :auto-hide-infospot="false"
                  fast-show-infospot
                  main-scene="first">
@@ -120,6 +122,12 @@ export default {
     },
     setBlue (layout) {
       layout.mesh.material.color = { r: 0, g: 0, b: 255 }
+    },
+    sceneLoadStart () {
+      console.log('Load start')
+    },
+    sceneLoadEnd () {
+      console.log('Load end')
     }
   }
 }
