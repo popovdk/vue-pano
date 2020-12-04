@@ -22,6 +22,10 @@ export default {
       type: Boolean,
       default: false
     },
+    autoClose: {
+      type: Boolean,
+      default: true
+    },
     hoverCursor: {
       type: String,
       default: 'pointer'
@@ -35,7 +39,7 @@ export default {
     vertices: [],
     geometry: null,
     material: null,
-    shape: null
+    mesh: null
   }),
   render () {
     return null
@@ -59,7 +63,7 @@ export default {
   },
   methods: {
     createShape () {
-      const holes = []
+      // Generate Vector3D
       this.points.forEach(point => {
         const coord = Utils.xyToVector3(this.getScene(), point[0], point[1])
 
@@ -67,15 +71,35 @@ export default {
           this.vertices.push(coord.negate())
         }
       })
-      this.geometry = new THREE.Geometry()
-      this.geometry.vertices = this.vertices
-      this.triangles = THREE.ShapeUtils.triangulateShape(this.geometry.vertices, holes)
 
-      for (let i = 0; i < this.triangles.length; i++) {
-        this.geometry.faces.push(new THREE.Face3(this.triangles[i][0], this.triangles[i][1], this.triangles[i][2]))
+      // Auto close
+      if (this.autoClose && this.points[0] !== this.points[this.points.length - 1]) {
+        const coord = Utils.xyToVector3(this.getScene(), this.points[0][0], this.points[0][1])
+
+        if (coord !== undefined) {
+          this.vertices.push(coord.negate())
+        }
       }
 
-      this.mesh = new THREE.Mesh(this.geometry, new THREE.MeshBasicMaterial({
+      const normal = new THREE.Vector3(0, 1, 0) // I already know the normal of xz-plane ;)
+      const normalZ = new THREE.Vector3(0, 0, 1) // base normal of xy-plane
+      const quaternion = new THREE.Quaternion().setFromUnitVectors(normal, normalZ)
+      const quaternionBack = new THREE.Quaternion().setFromUnitVectors(normalZ, normal)
+
+      this.vertices.forEach(point => {
+        point.applyQuaternion(quaternion)
+      })
+
+      const shape = new THREE.Shape(this.vertices)
+      const shapeGeom = new THREE.ShapeGeometry(shape)
+
+      this.vertices.forEach(point => {
+        point.applyQuaternion(quaternionBack)
+      })
+
+      shapeGeom.vertices = this.vertices
+
+      this.mesh = new THREE.Mesh(shapeGeom, new THREE.MeshBasicMaterial({
         color: this.color,
         wireframe: this.wireframe,
         side: THREE.DoubleSide,
@@ -88,8 +112,8 @@ export default {
       this.mesh.onClick = this.onClick
       this.mesh.hoverCursor = this.hoverCursor
 
-      this.getScene().add(this.mesh)
       this.addObject(this.mesh)
+      this.getScene().add(this.mesh)
     },
     setOpacity (opacity) {
       this.mesh.material.opacity = opacity
