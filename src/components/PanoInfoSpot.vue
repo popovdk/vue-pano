@@ -65,7 +65,8 @@ export default {
   },
   data () {
     return {
-      infoSpot: null
+      infoSpot: null,
+      updateTranslate: null
     }
   },
   mounted () {
@@ -86,7 +87,11 @@ export default {
 
         const spot = this
 
-        const updateTranslate = function () {
+        this.updateTranslate = function () {
+          if (spot.element === null) {
+            return false
+          }
+
           if (that.getScene().name !== that.getCurrentScene().name) {
             spot.element.style.display = 'none'
           } else {
@@ -103,7 +108,7 @@ export default {
           that.onClick()
         })
 
-        that.getViewer().addUpdateCallback(updateTranslate)
+        that.getViewer().addUpdateCallback(this.updateTranslate)
       }
     },
     defineInfoSpot () {
@@ -196,6 +201,7 @@ export default {
   destroyed () {
     if (this.infoSpot !== null) {
       this.infoSpot.dispose()
+      this.getViewer().removeUpdateCallback(this.updateTranslate)
     }
   }
 }
