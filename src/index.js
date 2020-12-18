@@ -9,7 +9,7 @@ const Components = [
   PanoScene,
   PanoInfoSpot,
   PanoMesh,
-  PanoLine,
+  PanoLine
 ]
 
 const install = function (Vue, opts = {}) {

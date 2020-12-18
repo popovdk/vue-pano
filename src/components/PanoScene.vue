@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import * as THREE from 'panolens/node_modules/three'
 import * as PanoLens from 'panolens/build/panolens.module'
 import * as Utils from '../utils'
 
@@ -56,6 +57,12 @@ export default {
     maxAzimuthAngle: {
       type: Number,
       default: Infinity
+    },
+    radius: {
+      default: 5000
+    },
+    segments: {
+      default: 60
     }
   },
   watch: {
@@ -103,7 +110,14 @@ export default {
     defineScene () {
       if (this.scene !== null) return false
 
-      this.scene = this.video ? new PanoLens.VideoPanorama(this.source) : new PanoLens.ImagePanorama(this.source)
+      this.scene = this.video
+        ? new PanoLens.VideoPanorama(this.source)
+        : new PanoLens.ImagePanorama(this.source, new THREE.SphereBufferGeometry(
+          this.radius,
+          this.segments,
+          this.segments)
+        )
+
       this.scene.name = this.name
       this.scene.geometry.uvsNeedUpdate = true
 
@@ -155,6 +169,10 @@ export default {
     },
     addObject (object) {
       this.objects.push(object)
+    },
+    showObjects (display = true) {
+      // eslint-disable-next-line no-return-assign
+      this.objects.forEach(object => object.visible = display)
     },
     showInfoSpots (display = true) {
       this.infoSpots.forEach(infoSpot => display ? infoSpot.show() : infoSpot.onDismiss())
