@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from 'panolens/node_modules/three'
 
 export function processCoordinates (x, y, width, height, cartesian = false) {
   if (!cartesian) return { x: x, y: y }

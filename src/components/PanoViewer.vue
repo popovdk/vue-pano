@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import * as THREE from 'three'
+import * as THREE from 'panolens/node_modules/three'
 import * as PanoLens from 'panolens/build/panolens.module'
 
 export default {

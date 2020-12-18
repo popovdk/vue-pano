@@ -1,5 +1,5 @@
 <script>
-import * as THREE from 'three'
+import * as THREE from 'panolens/node_modules/three'
 import * as Utils from '../utils'
 
 export default {
