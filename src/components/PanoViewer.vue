@@ -120,7 +120,6 @@ export default {
     }
   },
   mounted () {
-    this.currentScene = this.mainScene
     this.initialize()
   },
   methods: {
@@ -177,10 +176,15 @@ export default {
     switchScene (sceneName) {
       if (this.scenes[sceneName] === undefined) return false
 
+      if (this.currentScene) {
+        this.panoScenes[this.currentScene].showObjects(false)
+      }
+
       this.currentScene = sceneName
       this.viewer.setPanorama(this.scenes[sceneName])
 
       if (this.scenes[sceneName].center !== undefined) {
+        this.panoScenes[this.currentScene].showObjects(true)
         this.setCameraPosition(this.scenes[sceneName].center)
 
         if (this.fastShowInfospot) {

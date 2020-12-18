@@ -9,6 +9,8 @@
                  main-scene="first">
       <pano-scene
         name="first"
+        :radius="1500"
+        :segments="100"
         :source="require('@/assets/rooms/room1.jpeg')"
         :center="{x: 1970, y: 570}"
       >
