@@ -11,7 +11,7 @@ import * as PanoLens from 'panolens'
 
 export default {
   name: 'PanoInfoSpot',
-  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer', 'showOneInfoSpot'],
+  inject: ['addInfoSpot', 'getScene', 'sceneReady', 'getViewer', 'showOneInfoSpot', 'getCurrentScene'],
   props: {
     label: {
       type: String,
@@ -65,7 +65,8 @@ export default {
   },
   data () {
     return {
-      infoSpot: null
+      infoSpot: null,
+      updateTranslate: null
     }
   },
   mounted () {
@@ -78,7 +79,7 @@ export default {
       const that = this
 
       PanoLens.Infospot.prototype.updateElement = function (element) {
-        this.element = element.elm.cloneNode(true)
+        this.element = element.elm
         this.element.style.display = 'none'
         this.element.style.position = 'absolute'
         this.element.verticalDelta = 0
@@ -86,20 +87,28 @@ export default {
 
         const spot = this
 
-        const updateTranslate = function () {
-          const vector = that.getViewer().getScreenVector(that.infoSpot.position)
-          spot.element.style.display = 'block'
-          spot.element.style.transform = 'translate(' + (vector.x) + 'px, ' + (vector.y) + 'px)'
-          spot.element._width = spot.element.clientWidth
-          spot.element._height = spot.element.clientHeight
-          spot.element.dataset.showing = 'false'
+        this.updateTranslate = function () {
+          if (spot.element === null) {
+            return false
+          }
+
+          if (that.getScene().name !== that.getCurrentScene().name) {
+            spot.element.style.display = 'none'
+          } else {
+            const vector = that.getViewer().getScreenVector(that.infoSpot.position)
+            spot.element.style.display = 'block'
+            spot.element.style.transform = 'translate(' + (vector.x) + 'px, ' + (vector.y) + 'px)'
+            spot.element._width = spot.element.clientWidth
+            spot.element._height = spot.element.clientHeight
+            spot.element.dataset.showing = 'false'
+          }
         }
 
         this.element.addEventListener('click', () => {
           that.onClick()
         })
 
-        that.getViewer().addUpdateCallback(updateTranslate)
+        that.getViewer().addUpdateCallback(this.updateTranslate)
       }
     },
     defineInfoSpot () {
@@ -147,6 +156,18 @@ export default {
           this.onClick()
         })
 
+        this.infoSpot.addEventListener('hover', () => {
+          this.$emit('hover', this.infoSpot)
+        })
+
+        this.infoSpot.addEventListener('hoverenter', () => {
+          this.$emit('hoverenter', this.infoSpot)
+        })
+
+        this.infoSpot.addEventListener('hoverleave', () => {
+          this.$emit('hoverleave', this.infoSpot)
+        })
+
         this.$emit('defined', this.infoSpot)
 
         this.infoSpot.show()
@@ -180,6 +201,7 @@ export default {
   destroyed () {
     if (this.infoSpot !== null) {
       this.infoSpot.dispose()
+      this.getViewer().removeUpdateCallback(this.updateTranslate)
     }
   }
 }

@@ -5,12 +5,22 @@
 </template>
 
 <script>
+import * as THREE from 'panolens/node_modules/three'
 import * as PanoLens from 'panolens/build/panolens.module'
 import * as Utils from '../utils'
 
 export default {
   name: 'PanoScene',
-  inject: ['addScene', 'viewerReady', 'setCameraPosition', 'switchScene', 'getViewer'],
+  inject: [
+    'addScene',
+    'viewerReady',
+    'setCameraPosition',
+    'switchScene',
+    'getViewer',
+    'getCurrentScene',
+    'loadSceneEvent',
+    'progressSceneEvent'
+  ],
   props: {
     name: {
       required: true
@@ -31,12 +41,34 @@ export default {
       type: Object,
       required: true,
       validator: value => value.x !== undefined && value.y !== undefined
+    },
+    minPolarAngle: {
+      type: Number,
+      default: -Infinity
+    },
+    maxPolarAngle: {
+      type: Number,
+      default: Infinity
+    },
+    minAzimuthAngle: {
+      type: Number,
+      default: -Infinity
+    },
+    maxAzimuthAngle: {
+      type: Number,
+      default: Infinity
+    },
+    radius: {
+      default: 5000
+    },
+    segments: {
+      default: 60
     }
   },
   watch: {
     canMount () {
       if (this.canMount) {
-        this.addScene(this.defineScene())
+        this.addScene(this.defineScene(), this)
       }
     }
   },
@@ -48,7 +80,9 @@ export default {
   provide () {
     return {
       addInfoSpot: this.addInfoSpot,
+      addObject: this.addObject,
       getScene: this.getScene,
+      getCurrentScene: this.getCurrentScene,
       getViewer: this.getViewer,
       showOneInfoSpot: this.showOneInfoSpot,
       sceneReady: () => this.isReady
@@ -58,7 +92,8 @@ export default {
     return {
       scene: null,
       isReady: false,
-      infoSpots: []
+      infoSpots: [],
+      objects: []
     }
   },
   mounted () {
@@ -68,16 +103,28 @@ export default {
     })
 
     if (this.canMount) {
-      this.addScene(this.defineScene())
+      this.addScene(this.defineScene(), this)
     }
   },
   methods: {
     defineScene () {
       if (this.scene !== null) return false
 
-      this.scene = this.video ? new PanoLens.VideoPanorama(this.source) : new PanoLens.ImagePanorama(this.source)
+      this.scene = this.video
+        ? new PanoLens.VideoPanorama(this.source)
+        : new PanoLens.ImagePanorama(this.source, new THREE.SphereBufferGeometry(
+          this.radius,
+          this.segments,
+          this.segments)
+        )
+
       this.scene.name = this.name
       this.scene.geometry.uvsNeedUpdate = true
+
+      this.scene.addEventListener('progress', () => {
+        this.progressSceneEvent()
+        this.$emit('progress')
+      })
 
       this.scene.addEventListener('load', () => {
         // Create center XYZ position
@@ -88,6 +135,7 @@ export default {
           this.scene.material.map.image.height,
           this.cartesian
         )
+
         this.scene.center = Utils.xyzToVector3(Utils.uvWrap(
           this.scene, Utils.xyToVector2(
             Utils.xyToUv(
@@ -105,6 +153,7 @@ export default {
 
         this.isReady = true
         this.$emit('load')
+        this.loadSceneEvent()
       })
 
       this.scene.showInfoSpots = this.showInfoSpots
@@ -117,6 +166,13 @@ export default {
     addInfoSpot (infoSpot) {
       this.infoSpots.push(infoSpot)
       this.scene.add(infoSpot)
+    },
+    addObject (object) {
+      this.objects.push(object)
+    },
+    showObjects (display = true) {
+      // eslint-disable-next-line no-return-assign
+      this.objects.forEach(object => object.visible = display)
     },
     showInfoSpots (display = true) {
       this.infoSpots.forEach(infoSpot => display ? infoSpot.show() : infoSpot.onDismiss())

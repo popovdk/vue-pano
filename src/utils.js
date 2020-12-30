@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from 'panolens/node_modules/three'
 
 export function processCoordinates (x, y, width, height, cartesian = false) {
   if (!cartesian) return { x: x, y: y }
@@ -7,6 +7,35 @@ export function processCoordinates (x, y, width, height, cartesian = false) {
     x: (x - width / 2) + width,
     y: (y - height / 2) + height
   }
+}
+
+/**
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @returns {{x: number, y: number}}
+ */
+export function invertCoordinates (x, y, w, h) {
+  return {
+    x: w - x,
+    y: h - y
+  }
+}
+
+/**
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @returns {THREE.Vector3}
+ */
+export function xyToVector3 (scene, x, y) {
+  const cord = invertCoordinates(x, y, scene.material.map.image.width, scene.material.map.image.height)
+
+  return xyzToVector3(uvWrap(
+    scene, xyToVector2(xyToUv(cord.x, cord.y, scene.material.map.image.width, scene.material.map.image.height))
+  ))
 }
 
 /**
@@ -22,6 +51,10 @@ export function xyToVector2 (position) {
  * @returns {THREE.Vector3}
  */
 export function xyzToVector3 (position) {
+  if (position === undefined) {
+    return undefined
+  }
+
   return new THREE.Vector3(-position.x, -position.y, position.z)
 }
 
